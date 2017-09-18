@@ -16,8 +16,17 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
+
+        maven {
+            url "https://maven.google.com"
+        }
+
+        maven {
+            url "https://dl.bintray.com/bamboo/bamboo"
+        }
     }
 }
 
