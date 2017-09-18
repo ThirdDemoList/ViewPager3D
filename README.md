@@ -28,7 +28,7 @@
     android:paddingLeft="220dp"
     android:paddingRight="220dp"
     
-原理是使用了View的clipChildren和clipToPadding的特性
+原理是使用了View的clipChildren和clipToPadding的特性，为了使用方便，也为了节约代码量
 
 
 详细的使用方式请查阅sample
