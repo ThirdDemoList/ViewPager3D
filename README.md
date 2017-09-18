@@ -40,7 +40,9 @@ RotationTransformer   定义每页的RotationY变化
 ScaleTransformer      定义每页的Scale变化
 
 同时支持
+
 1、翻页切换点（pageRoundFactor）自定义，可以随意定义滑动到0～1范围内的位置切换显示在最前端page
+
 2、每一页的间隔（space）自定义，需要同时与doClip一起使用，控制每一页之间的间隔
 
 
