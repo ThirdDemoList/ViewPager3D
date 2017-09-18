@@ -33,7 +33,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
     /**
      * 是否旋转
      */
-    protected boolean doRotationY = false;
+    protected boolean doRotationY = true;
 
     private int pagerOrder = 0;
     /**
