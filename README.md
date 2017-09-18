@@ -25,9 +25,9 @@
     
 或者xml中
 
-    android:paddingLeft="220dp"
+    android:paddingLeft="220dp"
     android:paddingRight="220dp"
-    
+    
 原理是使用了View的clipChildren和clipToPadding的特性
 
 
