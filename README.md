@@ -33,13 +33,15 @@
 
 详细的使用方式请查阅sample
 
-FlowTransformer支持3种transform自定义
+**FlowTransformer支持3种transform自定义**
 
 LocationTransformer   定义每页的transitionX变化
+
 RotationTransformer   定义每页的RotationY变化
+
 ScaleTransformer      定义每页的Scale变化
 
-同时支持
+**支持**
 
 1、翻页切换点（pageRoundFactor）自定义，可以随意定义滑动到0～1范围内的位置切换显示在最前端page
 
