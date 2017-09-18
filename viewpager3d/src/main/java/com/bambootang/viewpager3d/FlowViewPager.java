@@ -28,6 +28,16 @@ public class FlowViewPager extends ViewPager {
         this.setPageTransformer(true, new FlowTransformer(this), LAYER_TYPE_HARDWARE);
     }
 
+    @Override
+    public final void setClipChildren(boolean clipChildren) {
+        super.setClipChildren(false);
+    }
+
+    @Override
+    public final void setClipToPadding(boolean clipToPadding) {
+        super.setClipToPadding(false);
+    }
+
     /**
      * 重写setPageTransformer方法，强制使用DRAW_ORDER_REVERSE排序方法
      *

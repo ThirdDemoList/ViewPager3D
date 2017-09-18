@@ -36,6 +36,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
     protected boolean doRotationY = true;
 
     private int pagerOrder = 0;
+
     /**
      * 这是根据给定宽度、角度，计算出以Y轴旋转后中心点左边以及右边的最终宽度的公式。ao为左边、bo为右边，AO为视距、XO为变换之前X轴离中心点的距离
      * 1、ao = (AO * Math.cos(S) * XO) / (AO + Math.sin(S) * XO);
@@ -72,12 +73,24 @@ public class FlowTransformer implements ViewPager.PageTransformer {
     protected double clipRight = 0, clipLeft = 0;
 
     public FlowTransformer(ViewPager viewPager) {
-        this.viewPager = viewPager;
+        initViewPager(viewPager);
     }
 
     public void bindWidthViewPager(ViewPager viewPager) {
+        initViewPager(viewPager);
+    }
+
+    private void initViewPager(final ViewPager viewPager) {
         this.viewPager = viewPager;
         this.viewPager.setPageTransformer(true, this);
+        this.viewPager.setClipChildren(false);
+        this.viewPager.setClipToPadding(false);
+        viewPager.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                viewPager.setClipChildren(false);
+                viewPager.setClipToPadding(false);
+            }
+        });
     }
 
     public void transformPage(View page, float position) {
