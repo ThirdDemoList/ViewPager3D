@@ -23,9 +23,14 @@ public class ReflectView extends LinearLayout {
 
     private int space;
 
-    public ReflectView(Context context, View view, float reflectHeight) {
+    public ReflectView(Context context) {
         super(context);
         this.space = dip2px(4);
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    public void setContentView(View view, float reflectHeight) {
+        removeAllViews();
         this.view = view;
         this.reflectHeight = reflectHeight;
         setOrientation(LinearLayout.VERTICAL);
@@ -41,8 +46,6 @@ public class ReflectView extends LinearLayout {
         reflectView.setLayoutParams(layoutParams);
         reflectView.setId(android.R.id.copy);
         addView(reflectView);
-
-        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public void setSpace(int space) {

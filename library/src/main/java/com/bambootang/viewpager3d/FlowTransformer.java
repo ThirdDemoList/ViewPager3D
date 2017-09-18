@@ -21,15 +21,21 @@ public class FlowTransformer implements ViewPager.PageTransformer {
 
     protected double AO = DEFAULT_DEEP_DISTANCE;
 
-    protected static final float CORRECT_PIX = 1.5f;
+    protected static final float CORRECT_PIX = 1f;
 
     protected ViewPager viewPager;
 
+    /**
+     * 是否将重叠区域切除
+     */
     protected boolean doClip = true;
 
+    /**
+     * 是否旋转
+     */
     protected boolean doRotationY = false;
 
-    protected int pagerOrder = 0;
+    private int pagerOrder = 0;
     /**
      * 这是根据给定宽度、角度，计算出以Y轴旋转后中心点左边以及右边的最终宽度的公式。ao为左边、bo为右边，AO为视距、XO为变换之前X轴离中心点的距离
      * 1、ao = (AO * Math.cos(S) * XO) / (AO + Math.sin(S) * XO);
@@ -45,15 +51,18 @@ public class FlowTransformer implements ViewPager.PageTransformer {
      */
     protected int space = 0;
 
-    protected float pageRound = 0.2f;
+    /**
+     * 分页因子
+     */
+    protected float pageRoundFactor = 0.5f;
 
-    protected LocationTransformer locationTransformer = new LinearLocationTransformer(0.6f);
+//    protected LocationTransformer locationTransformer = new LinearLocationTransformer(0.5f);
 
     protected ScaleTransformer scaleTransformer = new LinearScaleTransformer(0.15f);
 
-//    protected LocationTransformer locationTransformer = new RelativeLocationTransformer(scaleTransformer, 0.4f);
+    protected LocationTransformer locationTransformer = new RelativeLocationTransformer(scaleTransformer, 0.4f);
 
-    protected RotationTransformer rotationTransformer = new LinearRotationTransformer(0);
+    protected RotationTransformer rotationTransformer = new LinearRotationTransformer(10);
 
     protected AlphaTransformer alphaTransformer = new PowerAlphaTransformer(0.9f);
 
@@ -174,7 +183,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
 
             float rotateY = getRotation(position);
             double angle = Math.abs(rotateY / 180 * Math.PI);
-            if (position >= pageRound && position < 1) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
+            if (position >= pageRoundFactor && position < 1) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
                 double difWidth = computeWidthAfterRotationY(page, position - 1);
                 difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
                 keepWidth += difWidth / scaleFactor;
@@ -187,7 +196,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
                 //进行旋转
                 //调整最终需要切除的宽度
                 clipLeft = pageWidth - keepWidth - 1;
-            } else if (position > -1 && position <= -(1 - pageRound)) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
+            } else if (position > -1 && position <= -(1 - pageRoundFactor)) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
                 double difWidth = computeWidthAfterRotationY(page, position + 1);
                 difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
                 keepWidth += difWidth / scaleFactor;
@@ -235,21 +244,21 @@ public class FlowTransformer implements ViewPager.PageTransformer {
     }
 
     private int round(float position) {
-        if (position >= 1 - pageRound || position <= -1 + pageRound) {
+        if (position >= 1 - pageRoundFactor || position <= -1 + pageRoundFactor) {
             return Math.round(position);
         }
         if (position > 0) {
-            if ((position - (int) position) < pageRound) {
+            if ((position - (int) position) < pageRoundFactor) {
                 return (int) position;
-            } else if ((position - (int) position) >= pageRound) {
+            } else if ((position - (int) position) >= pageRoundFactor) {
                 return (int) position + 1;
             } else {
                 return (int) position;
             }
         } else {
-            if ((position - (int) position) > -pageRound) {
+            if ((position - (int) position) > -pageRoundFactor) {
                 return (int) position;
-            } else if (Math.abs(position - (int) position) <= pageRound) {
+            } else if (Math.abs(position - (int) position) <= pageRoundFactor) {
                 return (int) position - 1;
             } else {
                 return (int) position;
@@ -265,17 +274,17 @@ public class FlowTransformer implements ViewPager.PageTransformer {
      */
     protected void clipPage(View page, float position) {
         if (Build.VERSION.SDK_INT >= 180) {
-            if (position < -(1 - pageRound)) {
+            if (position < -(1 - pageRoundFactor)) {
                 page.setClipBounds(new Rect(0, 0, (int) (clipRight - space / getPageScale(position)), page.getHeight()));
-            } else if (position > pageRound) {
+            } else if (position > pageRoundFactor) {
                 page.setClipBounds(new Rect((int) (clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
             } else {
                 page.setClipBounds(new Rect(0, 0, page.getWidth(), page.getHeight()));
             }
         } else if (page instanceof Clipable) {
-            if (position < -(1 - pageRound)) {
+            if (position < -(1 - pageRoundFactor)) {
                 ((Clipable) page).setClipBound(new Rect(0, 0, (int) (clipRight - space / getPageScale(position)), page.getHeight()));
-            } else if (position > pageRound) {
+            } else if (position > pageRoundFactor) {
                 ((Clipable) page).setClipBound(new Rect((int) (clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
             } else {
                 ((Clipable) page).setClipBound(new Rect(0, 0, page.getWidth(), page.getHeight()));
@@ -378,8 +387,8 @@ public class FlowTransformer implements ViewPager.PageTransformer {
         this.space = space;
     }
 
-    public void setPageRound(float pageRound) {
-        this.pageRound = pageRound;
+    public void setPageRoundFactor(float pageRoundFactor) {
+        this.pageRoundFactor = pageRoundFactor;
     }
 
     public void setScaleTransformer(ScaleTransformer scaleTransformer) {
