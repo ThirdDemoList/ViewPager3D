@@ -14,4 +14,19 @@
 
 代码内可以直接使用FlowViewPager
 
-或者使用ViewPager.setPageTransformer(true,new FlowTransformer);
+或者使用ViewPager.setPageTransformer(true,new FlowTransformer());
+
+详细的使用方式请查阅sample
+
+FlowTransformer支持3种transform自定义
+
+LocationTransformer   定义每页的transitionX变化
+RotationTransformer   定义每页的RotationY变化
+ScaleTransformer      定义每页的Scale变化
+
+同时支持
+1、翻页切换点（pageRoundFactor）自定义，可以随意定义滑动到0～1范围内的位置切换显示在最前端page
+2、每一页的间隔（space）自定义，需要同时与doClip一起使用，控制每一页之间的间隔
+
+
+灵活使用3种transform 以及 翻页切换点和space可以做出非常丰富的动画效果。
