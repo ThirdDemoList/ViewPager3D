@@ -16,6 +16,21 @@
 
 或者使用ViewPager.setPageTransformer(true,new FlowTransformer());
 
+**如何控制中间页的大小**
+
+通过代码
+
+    viewPager.setPaddingLeft(paddingLeft);
+    viewPager.setPaddingRight(paddingRight);
+    
+或者xml中
+
+    android:paddingLeft="220dp"
+    android:paddingRight="220dp"
+    
+原理是使用了View的clipChildren和clipToPadding的特性
+
+
 详细的使用方式请查阅sample
 
 FlowTransformer支持3种transform自定义
