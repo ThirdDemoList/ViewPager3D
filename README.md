@@ -51,10 +51,6 @@ ScaleTransformer      定义每页的Scale变化
 
 灵活使用3种transform 以及 翻页切换点和space可以做出非常丰富的动画效果。
 
-ScaleTransformer      定义每页的Scale变化所有
-
-ScaleTransformer      定义每页的Scale变化
-
 
 ***为了大家扩展及在原基础上方便修改或重写某些流程，FlowTransforme类的几乎所有方法都设置成了protected作用域***
 
