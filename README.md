@@ -10,7 +10,7 @@
 
 **使用方式**
 
-    compile 'com.bambootang:viewpager3d:1.0'
+    compile 'com.bambootang:viewpager3d:1.1'
 
 代码内可以直接使用FlowViewPager
 
