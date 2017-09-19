@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSample(View view) {
         startActivity(new Intent(this, SampleActivity.class));
+//        startActivity(new Intent(this, AoTestActivity.class));
     }
 
     public void onSample1(View view) {

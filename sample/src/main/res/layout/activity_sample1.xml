@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context="com.bambootang.sample.MainActivity">
 
     <com.bambootang.viewpager3d.FlowViewPager
@@ -11,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="20dp"
-        android:paddingLeft="220dp"
-        android:paddingRight="220dp" />
+        android:paddingLeft="200dp"
+        android:paddingRight="200dp" />
 
 
 </RelativeLayout>

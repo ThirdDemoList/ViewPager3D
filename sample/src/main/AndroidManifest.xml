@@ -19,6 +19,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".AoTestActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".SampleActivity"
             android:screenOrientation="landscape" />
         <activity

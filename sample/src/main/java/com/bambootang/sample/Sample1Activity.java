@@ -1,11 +1,13 @@
 package com.bambootang.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bambootang.viewpager3d.AlphaTransformer;
@@ -20,13 +22,20 @@ import java.util.HashMap;
 
 public class Sample1Activity extends AppCompatActivity {
 
-    int[] imgIds = {R.drawable.img_001,
-            R.drawable.img_002,
-            R.drawable.img_003,
-            R.drawable.img_004,
-            R.drawable.img_005,
-            R.drawable.img_006,
-            R.drawable.img_007
+    //    int[] imgIds = {R.drawable.img_001,
+//            R.drawable.img_002,
+//            R.drawable.img_003,
+//            R.drawable.img_004,
+//            R.drawable.img_005,
+//            R.drawable.img_006,
+//            R.drawable.img_007
+//    };
+    int[] imgIds = {
+            Color.parseColor("#60000000"),
+            Color.parseColor("#80FF0000"),
+            Color.parseColor("#60000000"),
+            Color.parseColor("#80FF0000"),
+            Color.parseColor("#60000000")
     };
 
     FlowViewPager fvp_pagers;
@@ -40,6 +49,7 @@ public class Sample1Activity extends AppCompatActivity {
 
         fvp_pagers = (FlowViewPager) findViewById(R.id.fvp_pagers);
         fvp_pagers.setAdapter(pagerAdapter);
+        ((FlowTransformer) fvp_pagers.getTransformer()).setDoRotationY(true);
 
         // 设置ViewPager的缓存页数，因为demo没有做缓存，所以为了方便就这么搞了，页数不多的时候可以把这里设置为总页数
         fvp_pagers.setOffscreenPageLimit(imgIds.length);
@@ -74,12 +84,12 @@ public class Sample1Activity extends AppCompatActivity {
                 clipView = imageViewList.get(position);
             } else {
                 ImageView imageView = new ImageView(container.getContext());
-                imageView.setImageResource(imgIds[position]);
+                imageView.setBackgroundColor(imgIds[position]);
                 imageView.setAdjustViewBounds(false);
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 clipView = new ClipView(container.getContext());
                 clipView.setId(position + 1);
-                clipView.addView(imageView);
+                clipView.addView(imageView, new ClipView.LayoutParams(ClipView.LayoutParams.MATCH_PARENT, ClipView.LayoutParams.MATCH_PARENT));
                 imageViewList.put(position, clipView);
             }
             container.addView(clipView);

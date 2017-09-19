@@ -17,7 +17,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
     /**
      * View的默认透视视距
      */
-    private static final double DEFAULT_DEEP_DISTANCE = 600;
+    private static final double DEFAULT_DEEP_DISTANCE = 576;
 
     protected double AO = DEFAULT_DEEP_DISTANCE;
 
@@ -167,67 +167,139 @@ public class FlowTransformer implements ViewPager.PageTransformer {
             if (position > 0) {
                 keepWidth = 1 - (scaleFactor - (1 - getPreTransLationX(position))) / scaleFactor;
                 keepWidth *= pageWidth;
-                if (position < 1) {
+                if (pageRoundFactor < position && position < 1) {//1、
                     double difWidth = (1 - getPageScale(position - 1)) * pageWidth;
                     keepWidth += difWidth / scaleFactor;
+                } else if (position <= pageRoundFactor) {//2、
+                    keepWidth = pageWidth;
+                } else {//3、
+                    keepWidth += 0.0f;
                 }
-                clipRight = pageWidth;
-                clipLeft = (pageWidth - keepWidth) - 1;
-            } else {
-                keepWidth = 1 - (scaleFactor - (1 - getNextTransLationX(position))) / scaleFactor;
-                keepWidth *= pageWidth;
-                if (position > -1) {
-                    double difWidth = (1 - getPageScale(position + 1)) * pageWidth;
-                    keepWidth += difWidth / scaleFactor;
-                }
-                clipRight = keepWidth + 1;
-                clipLeft = 0;
-            }
-        } else {
-            if (position > 0) {
-                keepWidth = 1 - (scaleFactor - (1 - getPreTransLationX(position))) / scaleFactor;
-                keepWidth *= pageWidth;
                 clipRight = pageWidth;
                 clipLeft = (pageWidth - keepWidth);
             } else {
                 keepWidth = 1 - (scaleFactor - (1 - getNextTransLationX(position))) / scaleFactor;
                 keepWidth *= pageWidth;
+                if (pageRoundFactor - 1 > position && position > -1) {//2、
+                    double difWidth = (1 - getPageScale(position + 1)) * pageWidth;
+                    keepWidth += difWidth / scaleFactor;
+                } else if (position > pageRoundFactor - 1) {//1、
+                    keepWidth = pageWidth;
+                } else {//3、
+                    keepWidth += 0.0f;
+                }
                 clipRight = keepWidth;
                 clipLeft = 0;
             }
+        } else {
 
             float rotateY = getRotation(position);
             double angle = Math.abs(rotateY / 180 * Math.PI);
-            if (position >= pageRoundFactor && position < 1) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
-                double difWidth = computeWidthAfterRotationY(page, position - 1);
-                difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
-                keepWidth += difWidth / scaleFactor;
-                keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
-                //进行旋转
-                //调整重叠区域
-                clipLeft = pageWidth - keepWidth - 1;
-            } else if (position >= 1) {
-                keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
-                //进行旋转
-                //调整最终需要切除的宽度
-                clipLeft = pageWidth - keepWidth - 1;
-            } else if (position > -1 && position <= -(1 - pageRoundFactor)) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
-                double difWidth = computeWidthAfterRotationY(page, position + 1);
-                difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
-                keepWidth += difWidth / scaleFactor;
-                keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
-                //调整最终需要切除的宽度
-                clipRight = keepWidth + 1;
-            } else if (position <= -1) {
-                keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
-                //进行旋转
-                //调整最终需要切除的宽度
-                clipRight = keepWidth + 1;
+            if (position > 0) {
+                keepWidth = 1 - (scaleFactor - (1 - getPreTransLationX(position))) / scaleFactor;
+                keepWidth *= pageWidth;
+                if (pageRoundFactor < position && position < 1) {//position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
+                    double difWidth = computeWidthAfterRotationY(page, position - 1);
+                    difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
+                    keepWidth += difWidth / scaleFactor + 0.25f;
+                    keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
+                    //进行旋转
+                    //调整重叠区域
+                    clipLeft = pageWidth - keepWidth;
+                } else if (position <= pageRoundFactor) {//2、
+                    keepWidth = pageWidth;
+                } else {//3、
+                    keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
+                }
+                clipRight = pageWidth;
+                clipLeft = pageWidth - keepWidth;
+                if (position == pageRoundFactor) {
+                    System.out.println(" position==pageRoundFactor " + clipLeft + "," + pageWidth * scaleFactor);
+                }
+
+            } else {
+                keepWidth = 1 - (scaleFactor - (1 - getNextTransLationX(position))) / scaleFactor;
+                keepWidth *= pageWidth;
+                if (-1 < position && position <= pageRoundFactor - 1) {//2、position为0～1的时候，要考虑position为-1～0的item的右边斜进去的宽度
+                    double difWidth = computeWidthAfterRotationY(page, position + 1);
+                    difWidth = (difWidth * AO / (AO * Math.cos(angle) - difWidth * Math.sin(angle)));
+                    keepWidth += difWidth / scaleFactor + 0.25f;
+                    keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
+                } else if (position > pageRoundFactor - 1) {//1、
+                    keepWidth = pageWidth;
+                } else {//3
+                    keepWidth = correctWidthAfterRotationY(keepWidth, angle, position);
+                }
+                clipRight = keepWidth;
+                clipLeft = 0;
+                if (position == pageRoundFactor - 1) {
+                    System.out.println(" position==pageRoundFactor-1 " + clipRight + "," + pageWidth * scaleFactor);
+                }
             }
         }
         clipPage(page, position);
     }
 
+
+    /**
+     * 计算View在进行Y轴旋转后，宽度的变化
+     *
+     * @param view
+     * @param position
+     * @return
+     */
+    protected double computeWidthAfterRotationY(View view, float position) {
+        float scale = getPageScale(position);
+        float rotationY = getRotation(position);
+        double angle = Math.abs(rotationY / 180 * Math.PI);
+        double AO = DEFAULT_DEEP_DISTANCE / scale;
+        double ao = ((AO * Math.cos(angle) * view.getWidth() * scale) / (AO + Math.sin(angle) * view.getWidth() * scale));
+        return (view.getWidth() - ao);
+    }
+
+    /**
+     * 修正在旋转后会因为绘制时丢失像素导致边界分离的问题
+     *
+     * @return 修正后的宽度
+     */
+    protected double correctWidthAfterRotationY(double width, double angle, float position) {
+        double AO = DEFAULT_DEEP_DISTANCE / getPageScale(position);
+        //通过最终需要留下的宽度，反向计算出该宽度旋转之前的宽度
+        width = width * AO / (AO * Math.cos(angle) - width * Math.sin(angle));
+        double ao = ((AO * Math.cos(angle) * width) / (AO + Math.sin(angle) * width));
+        //计算出最终值
+        width = (ao * AO / (AO * Math.cos(angle) - ao * Math.sin(angle)));
+        return width;
+    }
+
+
+    /**
+     * 将重叠区域切掉，避免如果page有透明的地方会透视出来
+     *
+     * @param page
+     * @param position
+     */
+    protected void clipPage(View page, float position) {
+        if (Build.VERSION.SDK_INT >= 18) {
+            if (position <= pageRoundFactor - 1) {
+                page.setClipBounds(new Rect(0, 0, (int) Math.round(clipRight - space / getPageScale(position)), page.getHeight()));
+            } else if (position > pageRoundFactor) {
+                page.setClipBounds(new Rect((int) Math.round(clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
+            } else {
+                page.setClipBounds(new Rect(0, 0, page.getWidth(), page.getHeight()));
+            }
+        } else if (page instanceof Clipable) {
+            if (position <= pageRoundFactor - 1) {
+                ((Clipable) page).setClipBound(new Rect(0, 0, (int) Math.round(clipRight - space / getPageScale(position)), page.getHeight()));
+            } else if (position > pageRoundFactor) {
+                ((Clipable) page).setClipBound(new Rect((int) Math.round(clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
+            } else {
+                ((Clipable) page).setClipBound(new Rect(0, 0, page.getWidth(), page.getHeight()));
+            }
+        } else {
+            Log.d("FlowTransformer", "ViewPager的ItemView必须实现Clipable接口，您也可以直接使用ClipView");
+        }
+    }
 
     /**
      * 因为ViewPager的getChildDrawingOrder方法无法在滑动的过程中修改排序，观看源码发现顺序是由LayoutParams里面的position控制的，所以，这里直接反射设置
@@ -281,68 +353,10 @@ public class FlowTransformer implements ViewPager.PageTransformer {
         }
     }
 
-    /**
-     * 将重叠区域切掉，避免如果page有透明的地方会透视出来
-     *
-     * @param page
-     * @param position
-     */
-    protected void clipPage(View page, float position) {
-        if (Build.VERSION.SDK_INT >= 18) {
-            if (position < -(1 - pageRoundFactor)) {
-                page.setClipBounds(new Rect(0, 0, (int) (clipRight - space / getPageScale(position)), page.getHeight()));
-            } else if (position > pageRoundFactor) {
-                page.setClipBounds(new Rect((int) (clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
-            } else {
-                page.setClipBounds(new Rect(0, 0, page.getWidth(), page.getHeight()));
-            }
-        } else if (page instanceof Clipable) {
-            if (position < -(1 - pageRoundFactor)) {
-                ((Clipable) page).setClipBound(new Rect(0, 0, (int) (clipRight - space / getPageScale(position)), page.getHeight()));
-            } else if (position > pageRoundFactor) {
-                ((Clipable) page).setClipBound(new Rect((int) (clipLeft + space / getPageScale(position)), 0, page.getWidth(), page.getHeight()));
-            } else {
-                ((Clipable) page).setClipBound(new Rect(0, 0, page.getWidth(), page.getHeight()));
-            }
-        } else {
-            Log.d("FlowTransformer", "ViewPager的ItemView必须实现Clipable接口，您也可以直接使用ClipView");
-        }
-    }
 
     protected void transLationX(View page, float position) {
         float transLationX = getTransLationX(position) * page.getWidth();
         page.setTranslationX(transLationX);
-    }
-
-    /**
-     * 计算View在进行Y轴旋转后，宽度的变化
-     *
-     * @param view
-     * @param position
-     * @return
-     */
-    protected double computeWidthAfterRotationY(View view, float position) {
-        float scale = getPageScale(position);
-        float rotationY = getRotation(position);
-        double angle = Math.abs(rotationY / 180 * Math.PI);
-        double AO = DEFAULT_DEEP_DISTANCE / scale;
-        double ao = ((AO * Math.cos(angle) * view.getWidth() * scale) / (AO + Math.sin(angle) * view.getWidth() * scale));
-        return (view.getWidth() - ao);
-    }
-
-    /**
-     * 修正在旋转后会因为绘制时丢失像素导致边界分离的问题
-     *
-     * @return 修正后的宽度
-     */
-    protected double correctWidthAfterRotationY(double width, double angle, float position) {
-        double AO = DEFAULT_DEEP_DISTANCE / getPageScale(position);
-        //通过最终需要留下的宽度，反向计算出该宽度旋转之前的宽度
-        width = width * AO / (AO * Math.cos(angle) - width * Math.sin(angle));
-        double ao = ((AO * Math.cos(angle) * width) / (AO + Math.sin(angle) * width)) + CORRECT_PIX * 2;
-        //计算出最终值
-        width = (ao * AO / (AO * Math.cos(angle) - ao * Math.sin(angle)));
-        return width;
     }
 
     /**
