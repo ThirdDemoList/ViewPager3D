@@ -8,6 +8,8 @@
 
 ![image3.png](https://github.com/bambootang/ViewPager3D/blob/master/imgs/img3.gif)
 
+也可以直接下载sample-debug.apk安装到手机后查看真机运行效果。
+
 **使用方式**
 
     compile 'com.bambootang:viewpager3d:1.3'
