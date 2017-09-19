@@ -95,9 +95,11 @@ public class FlowTransformer implements ViewPager.PageTransformer {
 
     public void transformPage(View page, float position) {
         checkViewPagerDrawOrder();
-
         float paddingLeft = viewPager.getPaddingLeft();
         int pageWidth = page.getWidth();
+        if (pageWidth == 0) {
+            return;
+        }
         float correctionValue = paddingLeft * 1f / pageWidth;
         position -= correctionValue;
 
@@ -161,7 +163,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
         double keepWidth = 0;
         int pageWidth = page.getWidth();
         float scaleFactor = getPageScale(position);
-        if (!doRotationY) {
+        if (!doRotationY || Build.BRAND.toLowerCase().equals("honor")) {
             if (position > 0) {
                 keepWidth = 1 - (scaleFactor - (1 - getPreTransLationX(position))) / scaleFactor;
                 keepWidth *= pageWidth;
@@ -286,7 +288,7 @@ public class FlowTransformer implements ViewPager.PageTransformer {
      * @param position
      */
     protected void clipPage(View page, float position) {
-        if (Build.VERSION.SDK_INT >= 180) {
+        if (Build.VERSION.SDK_INT >= 18) {
             if (position < -(1 - pageRoundFactor)) {
                 page.setClipBounds(new Rect(0, 0, (int) (clipRight - space / getPageScale(position)), page.getHeight()));
             } else if (position > pageRoundFactor) {
@@ -422,5 +424,41 @@ public class FlowTransformer implements ViewPager.PageTransformer {
 
     public void setTransformIntercepter(TransformIntercepter transformIntercepter) {
         this.transformIntercepter = transformIntercepter;
+    }
+
+    public boolean isDoClip() {
+        return doClip;
+    }
+
+    public boolean isDoRotationY() {
+        return doRotationY;
+    }
+
+    public int getSpace() {
+        return space;
+    }
+
+    public float getPageRoundFactor() {
+        return pageRoundFactor;
+    }
+
+    public ScaleTransformer getScaleTransformer() {
+        return scaleTransformer;
+    }
+
+    public LocationTransformer getLocationTransformer() {
+        return locationTransformer;
+    }
+
+    public RotationTransformer getRotationTransformer() {
+        return rotationTransformer;
+    }
+
+    public AlphaTransformer getAlphaTransformer() {
+        return alphaTransformer;
+    }
+
+    public TransformIntercepter getTransformIntercepter() {
+        return transformIntercepter;
     }
 }
