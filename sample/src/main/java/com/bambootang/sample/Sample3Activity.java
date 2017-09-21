@@ -50,7 +50,7 @@ public class Sample3Activity extends AppCompatActivity {
         //执行旋转
         flowTransformer.setDoRotationY(true);
         //设置间隔为8
-        flowTransformer.setSpace(dip2px(8));
+        flowTransformer.setSpace(dip2px(0));
         //在中间位置切换上下分页
         flowTransformer.setPageRoundFactor(0.5f);
         //设置倒影的递减因子

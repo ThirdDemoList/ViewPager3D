@@ -50,6 +50,7 @@ public class Sample1Activity extends AppCompatActivity {
         fvp_pagers = (FlowViewPager) findViewById(R.id.fvp_pagers);
         fvp_pagers.setAdapter(pagerAdapter);
         ((FlowTransformer) fvp_pagers.getTransformer()).setDoRotationY(true);
+        ((FlowTransformer) fvp_pagers.getTransformer()).setDoClip(false);
 
         // 设置ViewPager的缓存页数，因为demo没有做缓存，所以为了方便就这么搞了，页数不多的时候可以把这里设置为总页数
         fvp_pagers.setOffscreenPageLimit(imgIds.length);
